@@ -1,27 +1,115 @@
 import os
 import subprocess
 import sys
+import json
 from colorama import Fore, Style, init
 
 # Init colorama
 init(autoreset=True)
 
+FASTFLAGS_FILE = "fastFlags.json"  # New file for fastflags
+
+# fixed press any key (i think??)
+if os.name == "nt":
+    import msvcrt
+    def press_any_key(prompt="Press any key to continue..."):
+        print(Fore.MAGENTA + prompt, end="", flush=True)
+        msvcrt.getch()
+        print()
+else:
+    def press_any_key(prompt="Press any key to continue..."):
+        input(Fore.MAGENTA + prompt)
+
 def clear():
     os.system("cls" if os.name == "nt" else "clear")
+
+
+def load_fastflags():
+    """Load fastflags from fastFlags.json, auto-create file if missing"""
+    if not os.path.exists(FASTFLAGS_FILE):
+        with open(FASTFLAGS_FILE, "w") as f:
+            json.dump({}, f)
+        return {}
+    try:
+        with open(FASTFLAGS_FILE, "r") as f:
+            return json.load(f)
+    except json.JSONDecodeError:
+        return {}
+
+def save_fastflags(fastflags):
+    """Save fastflags dict to fastFlags.json"""
+    with open(FASTFLAGS_FILE, "w") as f:
+        json.dump(fastflags, f, indent=2)
+
+def ask_fastflags():
+    """Ask user for a new fastflag key/value and save it (WIP)"""
+    clear()
+    print(Fore.YELLOW + "=== FastFlags Configuration (WIP) ===")
+    fastflags = load_fastflags()
+    
+    if fastflags:
+        print(Fore.CYAN + "Current fastflags:")
+        for k, v in fastflags.items():
+            print(Fore.YELLOW + f" - {k} = {v}")
+    else:
+        print(Fore.MAGENTA + "No fastflags set yet.")
+    
+    print(Fore.GREEN + "\nEnter a new fastflag (leave key blank to cancel):")
+    key = input(Fore.WHITE + "Key: ").strip()
+    
+    if not key:
+        print(Fore.RED + "[*] Cancelled, no changes made.")
+        press_any_key()
+        return
+    
+    value = input(Fore.WHITE + "Value: ").strip()
+    fastflags[key] = value
+    save_fastflags(fastflags)
+    print(Fore.GREEN + f"[*] Saved fastflag: {key} = {value}")
+    print(Fore.YELLOW + "[*] Note: FastFlags are currently WIP and won't be applied when launching.")
+    press_any_key()
 
 def main_menu():
     while True:
         clear()
-        print(Fore.CYAN + "=== Welcome to pekoStrap ===")
-        print(Fore.YELLOW + "Select your version:")
+
+        # Gradient colors from #07C8F9 to #0D41E1
+        gradient = [
+            (7, 200, 249),
+            (5, 157, 230),
+            (4, 123, 220),
+            (3, 98, 210),
+            (2, 74, 200),
+            (1, 58, 195),
+            (0, 50, 185),
+            (13, 65, 225),
+        ]
+
+        ascii_logo = [
+            "              __          _______ __                    ",
+            " .-----.-----|  |--.-----|   _   |  |_.----.---.-.-----. ",
+            " |  _  |  -__|    <|  _  |   1___|   _|   _|  _  |  _  | ",
+            " |   __|_____|__|__|_____|____   |____|__| |___._|   __| ",
+            " |__|                    |:  1   |               |__|    ",
+            "                         |::.. . |                       ",
+            "                         `-------'                       "
+        ]
+
+        # Print each line with its gradient color
+        for (r, g, b), line in zip(gradient, ascii_logo):
+            print(f"\033[38;2;{r};{g};{b}m{line}\033[0m")
+
+        print()
+        print(Fore.YELLOW + "Select your option:")
         print(Fore.GREEN + "1 - 2017 (WIP)")
         print(Fore.GREEN + "2 - 2018 (WIP)")
         print(Fore.GREEN + "3 - 2020")
         print(Fore.GREEN + "4 - 2021")
+        print(Fore.YELLOW + "5 - Set FastFlags (WIP)")  
         print(Fore.RED + "0 - Exit")
-
+        
         choice = input(Fore.WHITE + "\nEnter your choice: ")
-
+        
         if choice == "1":
             wip_message("2017")
         elif choice == "2":
@@ -30,29 +118,45 @@ def main_menu():
             launch_version("2020L")
         elif choice == "4":
             launch_version("2021M")
+        elif choice == "5":
+            ask_fastflags()  # wip fflags
         elif choice == "0":
             print(Fore.CYAN + "Goodbye!")
             sys.exit()
         else:
             print(Fore.RED + "Invalid choice! Try again.")
-            input("Press any key to continue...")
+            press_any_key()
+
 
 def wip_message(version):
     clear()
     print(Fore.RED + f"{version} is Work in Progress, this option is currently unavailable.")
-    input(Fore.MAGENTA + "Press any key to go back to main menu...")
+    press_any_key()
 
 def launch_version(folder):
     clear()
     path = os.path.expandvars(
         fr"%localappdata%\ProjectX\Versions\version-29f22ac5f5de4484\{folder}\ProjectXPlayerBeta.exe"
     )
+    
+    fflags = load_fflags()
+    flags_list = [f"{k}={v}" for k, v in fflags.items()]
+    
+    # ts doesnt work rn 
+    fastflags = load_fastflags()
+    if fastflags:
+        print(Fore.YELLOW + f"[*] Note: {len(fastflags)} fastflag(s) loaded but not applied (WIP feature)")
+    
     print(Fore.CYAN + f"Launching {folder}...")
+    
     try:
-        subprocess.Popen([path, "--app"])
+        if not os.path.isfile(path):
+            raise FileNotFoundError
+        subprocess.Popen([path, "--app"] + flags_list if flags_list else [path, "--app"])
     except FileNotFoundError:
         print(Fore.RED + f"Could not find executable at:\n{path}")
-    input(Fore.MAGENTA + "Press any key to go back to main menu...")
+    
+    press_any_key()
 
 if __name__ == "__main__":
     main_menu()
