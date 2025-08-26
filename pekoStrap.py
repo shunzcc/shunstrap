@@ -73,7 +73,7 @@ def main_menu():
     while True:
         clear()
 
-        # Gradient colors from #07C8F9 to #0D41E1
+        # Gradient colors from #07C8F9 to #0D41E1 (hex)
         gradient = [
             (7, 200, 249),
             (5, 157, 230),
@@ -95,7 +95,6 @@ def main_menu():
             "                         `-------'                       "
         ]
 
-        # Print each line with its gradient color
         for (r, g, b), line in zip(gradient, ascii_logo):
             print(f"\033[38;2;{r};{g};{b}m{line}\033[0m")
 
@@ -135,9 +134,39 @@ def wip_message(version):
 
 def launch_version(folder):
     clear()
-    path = os.path.expandvars(
-        fr"%localappdata%\ProjectX\Versions\version-29f22ac5f5de4484\{folder}\ProjectXPlayerBeta.exe"
-    )
+    
+    # testing
+    paths = [
+        os.path.expandvars(
+            fr"%localappdata%\ProjectX\Versions\version-7e043f9d229d4b9a\{folder}\ProjectXPlayerBeta.exe"
+        ),
+        os.path.expandvars(
+            fr"%localappdata%\Pekora\Versions\version-7e043f9d229d4b9a\{folder}\ProjectXPlayerBeta.exe"
+        )
+    ]
+    
+    fastflags = load_fastflags()
+    if fastflags:
+        print(Fore.YELLOW + f"[*] Note: {len(fastflags)} FastFlag(s) loaded but not applied (WIP feature)")
+    
+    print(Fore.CYAN + f"Launching {folder}...")
+
+    # try paths
+    exe_path = None
+    for path in paths:
+        if os.path.isfile(path):
+            exe_path = path
+            break
+
+    if exe_path:
+        try:
+            subprocess.Popen([exe_path, "--app"] + flags_list if flags_list else [exe_path, "--app"])
+        except Exception as e:
+            print(Fore.RED + f"Error while launching:\n{e}")
+    else:
+        print(Fore.RED + "Could not find Pekora. Please DM 97yg or fyr8 on Discord.")
+    
+    press_any_key()
     
     fflags = load_fflags()
     flags_list = [f"{k}={v}" for k, v in fflags.items()]
@@ -160,3 +189,4 @@ def launch_version(folder):
 
 if __name__ == "__main__":
     main_menu()
+
