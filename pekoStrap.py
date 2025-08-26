@@ -135,7 +135,7 @@ def wip_message(version):
 def launch_version(folder):
     clear()
     
-    # testing
+    # fallback idk wwhat im diignngnggnng
     paths = [
         os.path.expandvars(
             fr"%localappdata%\ProjectX\Versions\version-7e043f9d229d4b9a\{folder}\ProjectXPlayerBeta.exe"
@@ -144,14 +144,17 @@ def launch_version(folder):
             fr"%localappdata%\Pekora\Versions\version-7e043f9d229d4b9a\{folder}\ProjectXPlayerBeta.exe"
         )
     ]
-    
+
+    # huh
     fastflags = load_fastflags()
+    flags_list = [f"{k}={v}" for k, v in fastflags.items()]
+    
     if fastflags:
-        print(Fore.YELLOW + f"[*] Note: {len(fastflags)} FastFlag(s) loaded but not applied (WIP feature)")
+        print(Fore.YELLOW + f"[*] Note: {len(fastflags)} fastflag(s) loaded but not applied (WIP feature)")
     
     print(Fore.CYAN + f"Launching {folder}...")
 
-    # try paths
+    # tries paths
     exe_path = None
     for path in paths:
         if os.path.isfile(path):
@@ -160,33 +163,17 @@ def launch_version(folder):
 
     if exe_path:
         try:
-            subprocess.Popen([exe_path, "--app"] + flags_list if flags_list else [exe_path, "--app"])
+            args = [exe_path, "--app"]
+            if flags_list:
+                args.extend(flags_list)
+            subprocess.Popen(args)
         except Exception as e:
             print(Fore.RED + f"Error while launching:\n{e}")
     else:
-        print(Fore.RED + "Could not find Pekora. Please DM 97yg or fyr8 on Discord.")
+        print(Fore.RED + "Could not find executable. Error code: EXECNFOUND")
     
     press_any_key()
-    
-    fflags = load_fflags()
-    flags_list = [f"{k}={v}" for k, v in fflags.items()]
-    
-    # ts doesnt work rn 
-    fastflags = load_fastflags()
-    if fastflags:
-        print(Fore.YELLOW + f"[*] Note: {len(fastflags)} fastflag(s) loaded but not applied (WIP feature)")
-    
-    print(Fore.CYAN + f"Launching {folder}...")
-    
-    try:
-        if not os.path.isfile(path):
-            raise FileNotFoundError
-        subprocess.Popen([path, "--app"] + flags_list if flags_list else [path, "--app"])
-    except FileNotFoundError:
-        print(Fore.RED + f"Could not find executable at:\n{path}")
-    
-    press_any_key()
+
 
 if __name__ == "__main__":
     main_menu()
-
