@@ -2,6 +2,7 @@ import os
 import subprocess
 import sys
 import json
+import platform
 from colorama import Fore, Style, init
 
 # Init colorama
@@ -69,6 +70,40 @@ def ask_fastflags():
     print(Fore.YELLOW + "[*] Note: FastFlags are currently WIP and won't be applied when launching.")
     press_any_key()
 
+def debug():
+    clear()
+    print(Fore.MAGENTA + "Debug info")
+
+    # check pekora paths
+    pekora_paths = [
+        os.path.expandvars(
+            r"%localappdata%\ProjectX\Versions\version-7e043f9d229d4b9a"
+        ),
+        os.path.expandvars(
+            r"%localappdata%\Pekora\Versions\version-7e043f9d229d4b9a"
+        )
+    ]
+    found_paths = [p for p in pekora_paths if os.path.exists(p)]
+
+    if found_paths:
+        print(Fore.GREEN + "Pekora found at:")
+        for p in found_paths:
+            print(" - " + p)
+    else:
+        print(Fore.RED + "Pekora not found in known paths.")
+
+    # system info
+    os_name = platform.system()
+    os_version = platform.version()
+    cpu = platform.processor() or "Unknown CPU"
+
+    print(Fore.CYAN + f"Operating System: {os_name} {os_version}")
+    print(Fore.CYAN + f"CPU: {cpu}")
+
+    print(Fore.MAGENTA + "==========================")
+    press_any_key()
+
+
 def main_menu():
     while True:
         clear()
@@ -119,6 +154,8 @@ def main_menu():
             launch_version("2021M")
         elif choice == "5":
             ask_fastflags()  # wip fflags
+        elif choice == "debug":
+            debug()
         elif choice == "0":
             print(Fore.CYAN + "Goodbye!")
             sys.exit()
