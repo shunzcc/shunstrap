@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="logo.png" alt="pekoStrap Logo" width="120"/>
+  <img src="https://github.com/user-attachments/assets/a96cc5e7-d60b-45ce-b54b-f2f6f610056b" alt="pekoStrap" width="120"/>
 </p>
 
 <h1 align="center">pekoStrap</h1>
