@@ -8,7 +8,7 @@ from colorama import Fore, Style, init
 # Init colorama
 init(autoreset=True)
 
-FASTFLAGS_FILE = "fastFlags.json"  # New file for fastflags
+FASTFLAGS_FILE = "fastFlags.json"  # fflags
 
 # fixed press any key (i think??)
 if os.name == "nt":
@@ -24,9 +24,7 @@ else:
 def clear():
     os.system("cls" if os.name == "nt" else "clear")
 
-
 def load_fastflags():
-    """Load fastflags from fastFlags.json, auto-create file if missing"""
     if not os.path.exists(FASTFLAGS_FILE):
         with open(FASTFLAGS_FILE, "w") as f:
             json.dump({}, f)
@@ -35,80 +33,301 @@ def load_fastflags():
         with open(FASTFLAGS_FILE, "r") as f:
             return json.load(f)
     except json.JSONDecodeError:
+        print(Fore.RED + "[!] Error reading fastFlags.json - invalid JSON format")
         return {}
 
 def save_fastflags(fastflags):
-    """Save fastflags dict to fastFlags.json"""
-    with open(FASTFLAGS_FILE, "w") as f:
-        json.dump(fastflags, f, indent=2)
+    try:
+        with open(FASTFLAGS_FILE, "w") as f:
+            json.dump(fastflags, f, indent=2)
+        print(Fore.GREEN + "[*] FastFlags saved successfully!")
+    except Exception as e:
+        print(Fore.RED + f"[!] Failed to save FastFlags: {e}")
+
+def apply_fastflags(fastflags):
+    success = False
+    
+    # i learned this from stack overflow i think
+    exe_paths = [
+        os.path.expandvars(r"%localappdata%\ProjectX\Versions\version-7e043f9d229d4b9a"),
+        os.path.expandvars(r"%localappdata%\Pekora\Versions\version-7e043f9d229d4b9a")
+    ]
+    
+    for base_path in exe_paths:
+        if os.path.exists(base_path):
+            # version folderz
+            for folder in ["2020L", "2021M"]:
+                folder_path = os.path.join(base_path, folder)
+                if os.path.exists(folder_path):
+                    # ty zyth for helpinggg <3
+                    client_settings_dir = os.path.join(folder_path, "ClientSettings")
+                    try:
+                        os.makedirs(client_settings_dir, exist_ok=True)
+                        
+                        settings_path = os.path.join(client_settings_dir, "ClientAppSettings.json")
+                        
+                        if os.path.exists(settings_path):
+                            os.remove(settings_path)
+                        
+                        with open(settings_path, "w") as f:
+                            json.dump(fastflags, f, indent=2)
+                        print(Fore.GREEN + f"[*] Applied FastFlags to {folder}/ClientSettings")
+                        print(Fore.CYAN + f"[*] Location: {settings_path}")
+                        success = True
+                    except Exception as e:
+                        print(Fore.RED + f"[!] Failed to write to {folder}: {e}")
+    
+    return success
+
+def auto_detect_value_type(value_str):
+    value_str = value_str.strip()
+    
+    # boooooooolean
+    if value_str.lower() in ['true', 'false']:
+        return value_str.lower() == 'true'
+    
+    # int 
+    try:
+        if '.' not in value_str and 'e' not in value_str.lower():
+            return int(value_str)
+    except ValueError:
+        pass
+    
+    # fLOATIES
+    try:
+        return float(value_str)
+    except ValueError:
+        pass
+    
+    # string
+    return value_str
 
 def ask_fastflags():
-    """Ask user for a new fastflag key/value and save it (WIP)"""
-    clear()
-    print(Fore.YELLOW + "=== FastFlags Configuration (WIP) ===")
-    fastflags = load_fastflags()
+    while True:
+        clear()
+        print(Fore.YELLOW + "FastFlags Configuration")
+        fastflags = load_fastflags()
+        
+        if fastflags:
+            print(Fore.CYAN + "Current FFlags:")
+            for i, (k, v) in enumerate(fastflags.items(), 1):
+                value_type = type(v).__name__
+                print(Fore.YELLOW + f" {i}. {k} = {v} ({value_type})")
+        else:
+            print(Fore.MAGENTA + "No fflags set yet")
+        
+        print(Fore.GREEN + "\nOptions:")
+        print("1. Add FastFlag")
+        print("2. Remove FastFlag") 
+        print("3. Clear all FastFlags")
+        print("4. Apply FastFlags")
+        print("5. Import FastFlags from JSON")
+        print("0. Back to main menu")
+        
+        choice = input(Fore.WHITE + "\nEnter choice: ").strip()
+        
+        if choice == "1":
+            add_fastflag(fastflags)
+        elif choice == "2":
+            remove_fastflag(fastflags)
+        elif choice == "3":
+            clear_fastflags()
+        elif choice == "4":
+            if fastflags:
+                if apply_fastflags(fastflags):
+                    print(Fore.GREEN + "[*] FastFlags applied successfully.")
+                else:
+                    print(Fore.RED + "[!] Failed to apply FastFlags")
+            else:
+                print(Fore.YELLOW + "[*] No FastFlags to apply")
+            press_any_key()
+        elif choice == "5":
+            import_fastflags()
+        elif choice == "0":
+            break
+        else:
+            print(Fore.RED + "Invalid choice!")
+            press_any_key()
+
+def add_fastflag(fastflags):
+    print(Fore.GREEN + "\nAdd New FastFlag:")
+    print(Fore.CYAN + "Tip: Values are auto-converted.")
+    print(Fore.CYAN + "Common example:")
+    print(Fore.YELLOW + "  FFlagDebugGraphicsDisableMetal = true")
     
-    if fastflags:
-        print(Fore.CYAN + "Current fastflags:")
-        for k, v in fastflags.items():
-            print(Fore.YELLOW + f" - {k} = {v}")
-    else:
-        print(Fore.MAGENTA + "No fastflags set yet.")
-    
-    print(Fore.GREEN + "\nEnter a new fastflag (leave key blank to cancel):")
-    key = input(Fore.WHITE + "Key: ").strip()
-    
+    key = input(Fore.WHITE + "\nKey: ").strip()
     if not key:
-        print(Fore.RED + "[*] Cancelled, no changes made.")
+        print(Fore.RED + "[*] Cancelled - no key provided")
         press_any_key()
         return
     
-    value = input(Fore.WHITE + "Value: ").strip()
+    value_input = input(Fore.WHITE + "Value: ").strip()
+    if value_input == "":
+        print(Fore.RED + "[*] Cancelled - no value provided")
+        press_any_key()
+        return
+    
+    value = auto_detect_value_type(value_input)
     fastflags[key] = value
     save_fastflags(fastflags)
-    print(Fore.GREEN + f"[*] Saved fastflag: {key} = {value}")
-    print(Fore.YELLOW + "[*] Note: FastFlags are currently WIP and won't be applied when launching.")
+    
+    value_type = type(value).__name__
+    print(Fore.GREEN + f"[*] Added FastFlag: {key} = {value} ({value_type})")
+    press_any_key()
+
+def remove_fastflag(fastflags):
+    if not fastflags:
+        print(Fore.YELLOW + "[*] No FastFlags to remove")
+        press_any_key()
+        return
+    
+    print(Fore.YELLOW + "\nRemove FastFlag:")
+    key = input(Fore.WHITE + "Enter key to remove: ").strip()
+    
+    if key in fastflags:
+        del fastflags[key]
+        save_fastflags(fastflags)
+        print(Fore.GREEN + f"[*] Removed FastFlag: {key}")
+    else:
+        print(Fore.RED + f"[!] FastFlag '{key}' not found")
+    
+    press_any_key()
+
+def clear_fastflags():
+    confirm = input(Fore.RED + "Are you sure you want to clear ALL FastFlags? (y/N): ").strip().lower()
+    if confirm == 'y':
+        save_fastflags({})
+        print(Fore.GREEN + "[*] All FastFlags cleared")
+    else:
+        print(Fore.YELLOW + "[*] Cancelled")
+    press_any_key()
+
+def import_fastflags():
+    print(Fore.CYAN + "\nImport FastFlags from JSON:")
+    print(Fore.YELLOW + "Example format: {\"FFlagDebugGraphicsDisableMetal\": true, \"DFIntTaskSchedulerTargetFps\": 144}")
+    print(Fore.YELLOW + "Paste JSON content and press Enter twice when done:")
+    
+    lines = []
+    empty_count = 0
+    while True:
+        line = input()
+        if line == "":
+            empty_count += 1
+            if empty_count >= 2 or (len(lines) > 0 and lines[-1] == ""):
+                break
+        else:
+            empty_count = 0
+        lines.append(line)
+    
+    # idk waht this does smb told me to addd
+    while lines and lines[-1] == "":
+        lines.pop()
+    
+    json_text = "\n".join(lines)
+    
+    if not json_text.strip():
+        print(Fore.YELLOW + "[*] No content provided")
+        press_any_key()
+        return
+    
+    try:
+        imported_flags = json.loads(json_text)
+        if not isinstance(imported_flags, dict):
+            print(Fore.RED + "[!] JSON must be an object/dictionary")
+            press_any_key()
+            return
+        
+        current_flags = load_fastflags()
+        current_flags.update(imported_flags)
+        save_fastflags(current_flags)
+        
+        print(Fore.GREEN + f"[*] Imported {len(imported_flags)} FastFlag(s)")
+        for k, v in imported_flags.items():
+            print(Fore.CYAN + f"  + {k} = {v}")
+            
+    except json.JSONDecodeError as e:
+        print(Fore.RED + f"[!] Invalid JSON format: {e}")
+    
     press_any_key()
 
 def debug():
     clear()
     print(Fore.MAGENTA + "Debug info")
 
-    # check pekora paths
-    pekora_paths = [
-        os.path.expandvars(
-            r"%localappdata%\ProjectX\Versions\version-7e043f9d229d4b9a"
-        ),
-        os.path.expandvars(
-            r"%localappdata%\Pekora\Versions\version-7e043f9d229d4b9a"
-        )
+    # check paths SINCE CHLOE MESSED IT UPPP
+    base_paths = [
+        os.path.expandvars(r"%localappdata%\ProjectX"),
+        os.path.expandvars(r"%localappdata%\Pekora")
     ]
-    found_paths = [p for p in pekora_paths if os.path.exists(p)]
+    
+    print(Fore.CYAN + "Checking installation paths:")
+    for base_path in base_paths:
+        if os.path.exists(base_path):
+            print(Fore.GREEN + f"  ✓ Found: {base_path}")
+            versions_path = os.path.join(base_path, "Versions")
+            if os.path.exists(versions_path):
+                versions = [d for d in os.listdir(versions_path) if os.path.isdir(os.path.join(versions_path, d))]
+                for version in versions:
+                    print(Fore.YELLOW + f"    - Version: {version}")
+        else:
+            print(Fore.RED + f"  ✗ Not found: {base_path}")
+    
+    # check ClientSettings
+    exe_paths = [
+        os.path.expandvars(r"%localappdata%\ProjectX\Versions\version-7e043f9d229d4b9a"),
+        os.path.expandvars(r"%localappdata%\Pekora\Versions\version-7e043f9d229d4b9a")
+    ]
+    
+    print(Fore.CYAN + f"\nClientSettings status:")
+    for base_path in exe_paths:
+        if os.path.exists(base_path):
+            for folder in ["2020L", "2021M"]:
+                folder_path = os.path.join(base_path, folder)
+                if os.path.exists(folder_path):
+                    client_settings_dir = os.path.join(folder_path, "ClientSettings")
+                    settings_file = os.path.join(client_settings_dir, "ClientAppSettings.json")
+                    print(Fore.YELLOW + f"{folder} ClientSettings: {settings_file}")
+                    if os.path.exists(settings_file):
+                        print(Fore.GREEN + "  ✓ Exists")
+                        try:
+                            with open(settings_file, 'r') as f:
+                                settings = json.load(f)
+                            print(Fore.CYAN + f"  Active FastFlags: {len(settings)}")
+                            if settings:
+                                print(Fore.YELLOW + "  Current flags:")
+                                for k, v in list(settings.items())[:3]:  # Show first 3
+                                    print(Fore.CYAN + f"    {k} = {v}")
+                                if len(settings) > 3:
+                                    print(Fore.CYAN + f"    ... and {len(settings) - 3} more")
+                        except Exception as e:
+                            print(Fore.RED + f"  ✗ Error reading: {e}")
+                    else:
+                        print(Fore.RED + "  ✗ Not found")
 
-    if found_paths:
-        print(Fore.GREEN + "Pekora found at:")
-        for p in found_paths:
-            print(" - " + p)
+    # fastflags file
+    print(Fore.CYAN + f"\nLocal FastFlags file: {FASTFLAGS_FILE}")
+    if os.path.exists(FASTFLAGS_FILE):
+        print(Fore.GREEN + "  ✓ Exists")
+        try:
+            local_flags = load_fastflags()
+            print(Fore.CYAN + f"  Stored FastFlags: {len(local_flags)}")
+        except:
+            print(Fore.RED + "  ✗ Error reading local file")
     else:
-        print(Fore.RED + "Pekora not found in known paths.")
+        print(Fore.RED + "  ✗ Not found")
 
-    # system info
-    os_name = platform.system()
-    os_version = platform.version()
-    cpu = platform.processor() or "Unknown CPU"
+    print(Fore.CYAN + f"\nSystem Information:")
+    print(Fore.YELLOW + f"OS: {platform.system()} {platform.version()}")
+    print(Fore.YELLOW + f"CPU: {platform.processor() or 'Unknown'}")
+    print(Fore.YELLOW + f"Python: {sys.version.split()[0]}")
 
-    print(Fore.CYAN + f"Operating System: {os_name} {os_version}")
-    print(Fore.CYAN + f"CPU: {cpu}")
-
-    print(Fore.MAGENTA + "==========================")
+    print(Fore.MAGENTA + "=" * 50)
     press_any_key()
-
 
 def main_menu():
     while True:
         clear()
 
-        # Gradient colors from #07C8F9 to #0D41E1 (hex)
         gradient = [
             (7, 200, 249),
             (5, 157, 230),
@@ -133,13 +352,14 @@ def main_menu():
         for (r, g, b), line in zip(gradient, ascii_logo):
             print(f"\033[38;2;{r};{g};{b}m{line}\033[0m")
 
+        print(Fore.BLUE + "Made with <3 by usertest on Pekora")
         print()
         print(Fore.YELLOW + "Select your option:")
         print(Fore.GREEN + "1 - 2017 (WIP)")
         print(Fore.GREEN + "2 - 2018 (WIP)")
         print(Fore.GREEN + "3 - 2020")
         print(Fore.GREEN + "4 - 2021")
-        print(Fore.YELLOW + "5 - Set FastFlags (WIP)")  
+        print(Fore.GREEN + "5 - Set FastFlags")  # wgaaat
         print(Fore.RED + "0 - Exit")
         
         choice = input(Fore.WHITE + "\nEnter your choice: ")
@@ -153,7 +373,7 @@ def main_menu():
         elif choice == "4":
             launch_version("2021M")
         elif choice == "5":
-            ask_fastflags()  # wip fflags
+            ask_fastflags()  # buggggyyyyyyyyyyy
         elif choice == "debug":
             debug()
         elif choice == "0":
@@ -163,7 +383,6 @@ def main_menu():
             print(Fore.RED + "Invalid choice! Try again.")
             press_any_key()
 
-
 def wip_message(version):
     clear()
     print(Fore.RED + f"{version} is Work in Progress, this option is currently unavailable.")
@@ -172,7 +391,7 @@ def wip_message(version):
 def launch_version(folder):
     clear()
     
-    # fallback idk wwhat im diignngnggnng
+    # Check for paths
     paths = [
         os.path.expandvars(
             fr"%localappdata%\ProjectX\Versions\version-7e043f9d229d4b9a\{folder}\ProjectXPlayerBeta.exe"
@@ -182,16 +401,20 @@ def launch_version(folder):
         )
     ]
 
-    # huh
+    # aply
     fastflags = load_fastflags()
-    flags_list = [f"{k}={v}" for k, v in fastflags.items()]
-    
     if fastflags:
-        print(Fore.YELLOW + f"[*] Note: {len(fastflags)} fastflag(s) loaded but not applied (WIP feature)")
+        print(Fore.CYAN + f"[*] Applying {len(fastflags)} FastFlag(s)...")
+        if apply_fastflags(fastflags):
+            print(Fore.GREEN + "[*] FastFlags applied successfully!")
+        else:
+            print(Fore.RED + "[!] Failed to apply FastFlags")
+    else:
+        print(Fore.YELLOW + "[*] No FastFlags configured")
     
     print(Fore.CYAN + f"Launching {folder}...")
 
-    # tries paths
+    # Try to find executable
     exe_path = None
     for path in paths:
         if os.path.isfile(path):
@@ -201,16 +424,17 @@ def launch_version(folder):
     if exe_path:
         try:
             args = [exe_path, "--app"]
-            if flags_list:
-                args.extend(flags_list)
             subprocess.Popen(args)
+            print(Fore.GREEN + "[*] Launch successful!")
         except Exception as e:
             print(Fore.RED + f"Error while launching:\n{e}")
     else:
         print(Fore.RED + "Could not find executable. Error code: EXECNFOUND")
+        print(Fore.YELLOW + "Searched paths:")
+        for path in paths:
+            print(Fore.YELLOW + f"  - {path}")
     
     press_any_key()
-
 
 if __name__ == "__main__":
     main_menu()
