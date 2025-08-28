@@ -14,7 +14,7 @@
 
 > made with <3 by 97yg/fyr8 on discord
 # Installation
-Go to the Releases tab and select "pekoStrap.py".
+Go to the Releases tab and select "pekoStrap.exe", or select "pekoStrap.py" from the file list.
 For Linux, you will need Wine.
 # FastFlags
 For FFlags, go to https://github.com/Evil3D/Pekora-FFlags
