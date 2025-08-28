@@ -41,5 +41,6 @@ For a list of FFlags, visit [Evil3D/Pekora-FFlags](https://github.com/Evil3D/Pek
 ---
 
 ## ❤️ Credits
-> Made with ❤️ by **97yg/fyr8** on Discord
-> Linux support by **debuganddevs** on Discord
+- Made with ❤️ by **97yg/fyr8** on Discord
+- Linux support by **debuganddevs** on Discord
+- General help by **zyythy** on Discord
