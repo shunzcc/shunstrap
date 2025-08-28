@@ -1,5 +1,13 @@
-# <img width="96" height="96" alt="favicon" src="https://github.com/user-attachments/assets/5229d448-dcea-4b42-91e5-c38ada4f1ebc" /> pekoStrap
-A custom bootstrapper for Pekora, with FastFlags support!
+<p align="center">
+  <img src="logo.png" alt="pekoStrap Logo" width="120"/>
+</p>
+
+<h1 align="center">pekoStrap</h1>
+
+<p align="center">
+  A custom bootstrapper for <b>Pekora</b>, with FastFlags support.
+</p>
+
 
 
 <img width="1730" height="924" alt="image" src="https://github.com/user-attachments/assets/bdcd56e5-0a3d-4514-9b82-a14ee6e5e255" />
