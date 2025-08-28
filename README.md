@@ -5,7 +5,7 @@
 <h1 align="center">pekoStrap</h1>
 
 <p align="center">
-  A custom bootstrapper for <b>Pekora</b>, with FastFlags support.
+  A custom bootstrapper for <b>Pekora</b>, with FastFlags and Linux support.
 </p>
 
 
@@ -15,3 +15,6 @@
 > made with <3 by 97yg/fyr8 on discord
 # Installation
 Go to the Releases tab and select "pekoStrap.py".
+For Linux, you will need Wine.
+# FastFlags
+For FFlags, go to https://github.com/Evil3D/Pekora-FFlags
