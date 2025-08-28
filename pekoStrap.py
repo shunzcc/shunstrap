@@ -48,10 +48,18 @@ def apply_fastflags(fastflags):
     success = False
     
     # i learned this from stack overflow i think
-    exe_paths = [
-        os.path.expandvars(r"%localappdata%\ProjectX\Versions\version-7e043f9d229d4b9a"),
-        os.path.expandvars(r"%localappdata%\Pekora\Versions\version-7e043f9d229d4b9a")
-    ]
+
+    if os.name == "nt": # Windows - NTFS
+        exe_paths = [
+            os.path.expandvars(r"%localappdata%\ProjectX\Versions\version-7e043f9d229d4b9a"),
+            os.path.expandvars(r"%localappdata%\Pekora\Versions\version-7e043f9d229d4b9a")
+        ]
+    else: # assumes it's linux, if it's on MacOS then well... too bad :sob:
+        exe_paths = [
+            os.path.expanduser(
+                f"~/.wine/drive_c/users/{os.getenv('USER')}/AppData/Local/Pekora/Versions/version-7e043f9d229d4b9a"
+            )
+        ]
     
     for base_path in exe_paths:
         if os.path.exists(base_path):
@@ -255,10 +263,18 @@ def debug():
     print(Fore.MAGENTA + "Debug info")
 
     # check paths SINCE CHLOE MESSED IT UPPP
-    base_paths = [
-        os.path.expandvars(r"%localappdata%\ProjectX"),
-        os.path.expandvars(r"%localappdata%\Pekora")
-    ]
+    if os.name == "nt":
+        base_paths = [
+            os.path.expandvars(r"%localappdata%\ProjectX"),
+            os.path.expandvars(r"%localappdata%\Pekora")
+        ]
+    else:
+        base_paths = [
+            os.path.expanduser(
+                f"~/.wine/drive_c/users/{os.getenv('USER')}/AppData/Local/Pekora/Versions/version-7e043f9d229d4b9a"
+            )
+        ]
+
     
     print(Fore.CYAN + "Checking installation paths:")
     for base_path in base_paths:
@@ -273,10 +289,17 @@ def debug():
             print(Fore.RED + f"  ✗ Not found: {base_path}")
     
     # check ClientSettings
-    exe_paths = [
-        os.path.expandvars(r"%localappdata%\ProjectX\Versions\version-7e043f9d229d4b9a"),
-        os.path.expandvars(r"%localappdata%\Pekora\Versions\version-7e043f9d229d4b9a")
-    ]
+    if os.name == "nt": # Windows - NTFS
+        exe_paths = [
+            os.path.expandvars(r"%localappdata%\ProjectX\Versions\version-7e043f9d229d4b9a"),
+            os.path.expandvars(r"%localappdata%\Pekora\Versions\version-7e043f9d229d4b9a")
+        ]
+    else: # assumes it's linux (Wine), if it's on MacOS then well... too bad :sob:
+        exe_paths = [
+            os.path.expanduser(
+                f"~/.wine/drive_c/users/{os.getenv('USER')}/AppData/Local/Pekora/Versions/version-7e043f9d229d4b9a"
+            )
+        ]
     
     print(Fore.CYAN + f"\nClientSettings status:")
     for base_path in exe_paths:
@@ -390,18 +413,25 @@ def wip_message(version):
 
 def launch_version(folder):
     clear()
-    
-    # Check for paths
-    paths = [
-        os.path.expandvars(
-            fr"%localappdata%\ProjectX\Versions\version-7e043f9d229d4b9a\{folder}\ProjectXPlayerBeta.exe"
-        ),
-        os.path.expandvars(
-            fr"%localappdata%\Pekora\Versions\version-7e043f9d229d4b9a\{folder}\ProjectXPlayerBeta.exe"
+    # check paths
+    if os.name == "nt":
+        paths = [
+            os.path.expandvars(
+                fr"%localappdata%\ProjectX\Versions\version-7e043f9d229d4b9a\{folder}\ProjectXPlayerBeta.exe"
+            ),
+            os.path.expandvars(
+                fr"%localappdata%\Pekora\Versions\version-7e043f9d229d4b9a\{folder}\ProjectXPlayerBeta.exe"
+            )
+        ]
+    else:
+        base = os.path.expanduser(
+            f"~/.wine/drive_c/users/{os.getenv('USER')}/AppData/Local/Pekora/Versions/version-7e043f9d229d4b9a"
         )
-    ]
+        paths = [
+            os.path.join(base, folder, "ProjectXPlayerBeta.exe")
+        ]
 
-    # aply
+    # Apply FastFlags
     fastflags = load_fastflags()
     if fastflags:
         print(Fore.CYAN + f"[*] Applying {len(fastflags)} FastFlag(s)...")
@@ -411,10 +441,9 @@ def launch_version(folder):
             print(Fore.RED + "[!] Failed to apply FastFlags")
     else:
         print(Fore.YELLOW + "[*] No FastFlags configured")
-    
+
     print(Fore.CYAN + f"Launching {folder}...")
 
-    # Try to find executable
     exe_path = None
     for path in paths:
         if os.path.isfile(path):
@@ -423,8 +452,15 @@ def launch_version(folder):
 
     if exe_path:
         try:
-            args = [exe_path, "--app"]
-            subprocess.Popen(args)
+            if os.name == "nt":
+                subprocess.Popen([exe_path, "--app"])
+            else:
+                subprocess.Popen([
+                    "env",
+                    "__NV_PRIME_RENDER_OFFLOAD=1",
+                    "__GLX_VENDOR_LIBRARY_NAME=nvidia",
+                    "wine64", exe_path, "--app"
+                ])
             print(Fore.GREEN + "[*] Launch successful!")
         except Exception as e:
             print(Fore.RED + f"Error while launching:\n{e}")
@@ -433,7 +469,7 @@ def launch_version(folder):
         print(Fore.YELLOW + "Searched paths:")
         for path in paths:
             print(Fore.YELLOW + f"  - {path}")
-    
+
     press_any_key()
 
 if __name__ == "__main__":
