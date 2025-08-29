@@ -258,6 +258,40 @@ def import_fastflags():
     
     press_any_key()
 
+def launch_fps_unlocker():
+    clear()
+    print(Fore.CYAN + "Enable FPS Unlock")
+    
+    # check for unlockerrrr
+    fps_unlocker_paths = [
+        "pekorafpsunlocker.exe",
+        os.path.join(os.path.dirname(sys.executable), "pekorafpsunlocker.exe")
+    ]
+    
+    exe_path = None
+    for path in fps_unlocker_paths:
+        if os.path.isfile(path):
+            exe_path = path
+            break
+    
+    if exe_path:
+        try:
+            print(Fore.YELLOW + "[*] Launching FPS Unlocker...")
+            if os.name == "nt":
+                subprocess.Popen([exe_path])
+            else:
+                subprocess.Popen(["wine64", exe_path])
+            print(Fore.GREEN + "[*] FPS Unlocker launched successfully!")
+        except Exception as e:
+            print(Fore.RED + f"Error while launching FPS Unlocker:\n{e}")
+    else:
+        print(Fore.RED + "Could not find pekorafpsunlocker.exe")
+        print(Fore.YELLOW + "Searched paths:")
+        for path in fps_unlocker_paths:
+            print(Fore.YELLOW + f"  - {path}")
+    
+    press_any_key()
+
 def debug():
     clear()
     print(Fore.MAGENTA + "Debug info")
@@ -382,7 +416,8 @@ def main_menu():
         print(Fore.GREEN + "2 - 2018 (WIP)")
         print(Fore.GREEN + "3 - 2020")
         print(Fore.GREEN + "4 - 2021")
-        print(Fore.GREEN + "5 - Set FastFlags")  # wgaaat
+        print(Fore.GREEN + "5 - Set FastFlags")
+        print(Fore.GREEN + "6 - Enable FPS Unlock")
         print(Fore.RED + "0 - Exit")
         
         choice = input(Fore.WHITE + "\nEnter your choice: ")
@@ -396,7 +431,9 @@ def main_menu():
         elif choice == "4":
             launch_version("2021M")
         elif choice == "5":
-            ask_fastflags()  # buggggyyyyyyyyyyy
+            ask_fastflags()
+        elif choice == "6":
+            launch_fps_unlocker()
         elif choice == "debug":
             debug()
         elif choice == "0":
