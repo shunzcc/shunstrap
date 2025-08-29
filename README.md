@@ -5,7 +5,7 @@
 <h1 align="center">pekoStrap</h1>
 
 <p align="center">
-  <i>A custom bootstrapper for [Pekora](https://pekora.zip/), with FastFlags and Linux support.</i>
+  <i>A custom bootstrapper for **Pekora**, with FastFlags and Linux support.</i>
 </p>
 
 <p align="center">
