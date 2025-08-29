@@ -1,5 +1,5 @@
 <p align="center">
-  <img width="96" height="96" alt="Untitled design(1)" src="https://github.com/user-attachments/assets/fde1a99c-afac-4a45-8dcc-0064865e249c" />
+  <img width="96" height="96" alt="pekoStrap" src="https://github.com/user-attachments/assets/c9d82cfd-cb7b-4f17-9697-68378488f8ff" />
 </p>
 
 <h1 align="center">pekoStrap</h1>
