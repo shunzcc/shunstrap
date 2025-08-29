@@ -1,11 +1,11 @@
 <p align="center">
-  <img width="96" height="96" alt="pekoStrap" src="https://github.com/user-attachments/assets/c9d82cfd-cb7b-4f17-9697-68378488f8ff" />
-</p>
+<img width="96" height="96" alt="pekoStrap Updated" src="https://github.com/user-attachments/assets/d8b23f7b-80a3-4384-b4a8-7d4ffd42d855" />
 
+</p>
 <h1 align="center">pekoStrap</h1>
 
 <p align="center">
-  <i>A custom bootstrapper for <b>Pekora</b>, with FastFlags and Linux support.</i>
+  <i>A custom bootstrapper for [Pekora](https://pekora.zip/), with FastFlags and Linux support.</i>
 </p>
 
 <p align="center">
@@ -36,6 +36,13 @@ For Linux:
 
 ---
 
+## ⭐ Features
+- FastFlags support
+- Linux support
+- FPS unlocker
+
+---
+
 ## ⚡ FastFlags
 For a list of FFlags, visit [Evil3D/Pekora-FFlags](https://github.com/Evil3D/Pekora-FFlags).
 
@@ -43,5 +50,6 @@ For a list of FFlags, visit [Evil3D/Pekora-FFlags](https://github.com/Evil3D/Pek
 
 ## ❤️ Credits
 - Made with ❤️ by **97yg/fyr8** on Discord
-- Linux support by **debuganddevs** on Discord
+- Linux support and more by **debuganddevs** on Discord
 - General help by **zyythy** on Discord
+- FPS unlocker by **sushality** on Discord
