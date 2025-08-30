@@ -10,13 +10,13 @@
 
 <p align="center">
   <a href="https://github.com/WindowsMI/pekoStrap/releases">
-    <img src="https://img.shields.io/github/v/release/WindowsMI/pekoStrap?style=flat-square&color=blue" alt="Latest Release">
+    <img src="https://img.shields.io/github/v/release/reprovision/pekoStrap?style=flat-square&color=blue" alt="Latest Release">
   </a>
   <a href="https://github.com/WindowsMI/pekoStrap/stargazers">
-    <img src="https://img.shields.io/github/stars/WindowsMI/pekoStrap?style=flat-square&color=yellow" alt="Stars">
+    <img src="https://img.shields.io/github/stars/reprovision/pekoStrap?style=flat-square&color=yellow" alt="Stars">
   </a>
   <a href="https://github.com/WindowsMI/pekoStrap/issues">
-    <img src="https://img.shields.io/github/issues/WindowsMI/pekoStrap?style=flat-square&color=red" alt="Issues">
+    <img src="https://img.shields.io/github/issues/reprovision/pekoStrap?style=flat-square&color=red" alt="Issues">
   </a>
 </p>
 
