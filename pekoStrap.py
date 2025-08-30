@@ -24,6 +24,89 @@ else:
 def clear():
     os.system("cls" if os.name == "nt" else "clear")
 
+def get_system_info():
+    """Get system information for cross-platform compatibility"""
+    system = platform.system().lower()
+    return {
+        'is_windows': system == 'windows',
+        'is_linux': system == 'linux',
+        'is_macos': system == 'darwin',
+        'system_name': system
+    }
+
+def get_installation_paths():
+    """Get platform-specific installation paths"""
+    sys_info = get_system_info()
+    
+    if sys_info['is_windows']:
+        return [
+            os.path.expandvars(r"%localappdata%\ProjectX\Versions\version-7e043f9d229d4b9a"),
+            os.path.expandvars(r"%localappdata%\Pekora\Versions\version-7e043f9d229d4b9a")
+        ]
+    elif sys_info['is_linux']:
+        # Linux with Wine
+        user = os.getenv('USER', 'user')
+        return [
+            os.path.expanduser(f"~/.wine/drive_c/users/{user}/AppData/Local/ProjectX/Versions/version-7e043f9d229d4b9a"),
+            os.path.expanduser(f"~/.wine/drive_c/users/{user}/AppData/Local/Pekora/Versions/version-7e043f9d229d4b9a"),
+            # Alternative Wine prefix locations
+            os.path.expanduser(f"~/.local/share/wineprefixes/pekora/drive_c/users/{user}/AppData/Local/Pekora/Versions/version-7e043f9d229d4b9a"),
+            os.path.expanduser(f"~/.local/share/wineprefixes/projectx/drive_c/users/{user}/AppData/Local/ProjectX/Versions/version-7e043f9d229d4b9a")
+        ]
+    elif sys_info['is_macos']:
+        # macOS with Wine/CrossOver/Parallels
+        user = os.getenv('USER', 'user')
+        return [
+            # Wine on macOS
+            os.path.expanduser(f"~/.wine/drive_c/users/{user}/AppData/Local/ProjectX/Versions/version-7e043f9d229d4b9a"),
+            os.path.expanduser(f"~/.wine/drive_c/users/{user}/AppData/Local/Pekora/Versions/version-7e043f9d229d4b9a"),
+            # CrossOver
+            os.path.expanduser(f"~/Library/Application Support/CrossOver/Bottles/*/drive_c/users/{user}/AppData/Local/ProjectX/Versions/version-7e043f9d229d4b9a"),
+            os.path.expanduser(f"~/Library/Application Support/CrossOver/Bottles/*/drive_c/users/{user}/AppData/Local/Pekora/Versions/version-7e043f9d229d4b9a"),
+            # Parallels (if running Windows VM)
+            os.path.expanduser(f"~/Parallels/*.pvm/Windows*/Users/{user}/AppData/Local/ProjectX/Versions/version-7e043f9d229d4b9a"),
+            os.path.expanduser(f"~/Parallels/*.pvm/Windows*/Users/{user}/AppData/Local/Pekora/Versions/version-7e043f9d229d4b9a")
+        ]
+    else:
+        print(Fore.YELLOW + f"[!] Unsupported system: {sys_info['system_name']}")
+        return []
+
+def get_executable_paths(folder):
+    """Get platform-specific executable paths"""
+    sys_info = get_system_info()
+    base_paths = get_installation_paths()
+    exe_paths = []
+    
+    for base_path in base_paths:
+        if sys_info['is_windows']:
+            exe_paths.append(os.path.join(base_path, folder, "ProjectXPlayerBeta.exe"))
+        else:
+            # Linux/macOS with Wine - same executable name but different execution method
+            exe_paths.append(os.path.join(base_path, folder, "ProjectXPlayerBeta.exe"))
+    
+    return exe_paths
+
+def get_fps_unlocker_paths():
+    """Get platform-specific FPS unlocker paths"""
+    sys_info = get_system_info()
+    
+    if sys_info['is_windows']:
+        return [
+            "pekorafpsunlocker.exe",
+            os.path.join(os.path.dirname(sys.executable), "pekorafpsunlocker.exe"),
+            os.path.join(os.getcwd(), "pekorafpsunlocker.exe")
+        ]
+    else:
+        # For Linux/macOS, also check for the exe to run with Wine
+        return [
+            "pekorafpsunlocker.exe",
+            os.path.join(os.path.dirname(sys.executable), "pekorafpsunlocker.exe"),
+            os.path.join(os.getcwd(), "pekorafpsunlocker.exe"),
+            # Also check for potential native versions
+            "pekorafpsunlocker",
+            "./pekorafpsunlocker"
+        ]
+
 def load_fastflags():
     if not os.path.exists(FASTFLAGS_FILE):
         with open(FASTFLAGS_FILE, "w") as f:
@@ -46,20 +129,7 @@ def save_fastflags(fastflags):
 
 def apply_fastflags(fastflags):
     success = False
-    
-    # i learned this from stack overflow i think
-
-    if os.name == "nt": # Windows - NTFS
-        exe_paths = [
-            os.path.expandvars(r"%localappdata%\ProjectX\Versions\version-7e043f9d229d4b9a"),
-            os.path.expandvars(r"%localappdata%\Pekora\Versions\version-7e043f9d229d4b9a")
-        ]
-    else: # assumes it's linux, if it's on MacOS then well... too bad :sob:
-        exe_paths = [
-            os.path.expanduser(
-                f"~/.wine/drive_c/users/{os.getenv('USER')}/AppData/Local/Pekora/Versions/version-7e043f9d229d4b9a"
-            )
-        ]
+    exe_paths = get_installation_paths()
     
     for base_path in exe_paths:
         if os.path.exists(base_path):
@@ -260,13 +330,11 @@ def import_fastflags():
 
 def launch_fps_unlocker():
     clear()
+    sys_info = get_system_info()
     print(Fore.CYAN + "Enable FPS Unlock")
     
     # check for unlockerrrr
-    fps_unlocker_paths = [
-        "pekorafpsunlocker.exe",
-        os.path.join(os.path.dirname(sys.executable), "pekorafpsunlocker.exe")
-    ]
+    fps_unlocker_paths = get_fps_unlocker_paths()
     
     exe_path = None
     for path in fps_unlocker_paths:
@@ -277,13 +345,28 @@ def launch_fps_unlocker():
     if exe_path:
         try:
             print(Fore.YELLOW + "[*] Launching FPS Unlocker...")
-            if os.name == "nt":
+            
+            if sys_info['is_windows']:
                 subprocess.Popen([exe_path])
-            else:
-                subprocess.Popen(["wine64", exe_path])
+            elif sys_info['is_linux']:
+                # Try Wine first, then native if available
+                if exe_path.endswith('.exe'):
+                    subprocess.Popen(["wine64", exe_path])
+                else:
+                    subprocess.Popen([exe_path])
+            elif sys_info['is_macos']:
+                # macOS with wine or native
+                if exe_path.endswith('.exe'):
+                    # try Wine on macOS
+                    subprocess.Popen(["wine64", exe_path])
+                else:
+                    subprocess.Popen([exe_path])
+            
             print(Fore.GREEN + "[*] FPS Unlocker launched successfully!")
         except Exception as e:
             print(Fore.RED + f"Error while launching FPS Unlocker:\n{e}")
+            if not sys_info['is_windows']:
+                print(Fore.YELLOW + "Make sure Wine is installed and configured properly.")
     else:
         print(Fore.RED + "Could not find pekorafpsunlocker.exe")
         print(Fore.YELLOW + "Searched paths:")
@@ -294,21 +377,11 @@ def launch_fps_unlocker():
 
 def debug():
     clear()
+    sys_info = get_system_info()
     print(Fore.MAGENTA + "Debug info")
 
-    # check paths SINCE CHLOE MESSED IT UPPP
-    if os.name == "nt":
-        base_paths = [
-            os.path.expandvars(r"%localappdata%\ProjectX"),
-            os.path.expandvars(r"%localappdata%\Pekora")
-        ]
-    else:
-        base_paths = [
-            os.path.expanduser(
-                f"~/.wine/drive_c/users/{os.getenv('USER')}/AppData/Local/Pekora/Versions/version-7e043f9d229d4b9a"
-            )
-        ]
-
+    # check paths
+    base_paths = get_installation_paths()
     
     print(Fore.CYAN + "Checking installation paths:")
     for base_path in base_paths:
@@ -323,17 +396,7 @@ def debug():
             print(Fore.RED + f"  ✗ Not found: {base_path}")
     
     # check ClientSettings
-    if os.name == "nt": # Windows - NTFS
-        exe_paths = [
-            os.path.expandvars(r"%localappdata%\ProjectX\Versions\version-7e043f9d229d4b9a"),
-            os.path.expandvars(r"%localappdata%\Pekora\Versions\version-7e043f9d229d4b9a")
-        ]
-    else: # assumes it's linux (Wine), if it's on MacOS then well... too bad :sob:
-        exe_paths = [
-            os.path.expanduser(
-                f"~/.wine/drive_c/users/{os.getenv('USER')}/AppData/Local/Pekora/Versions/version-7e043f9d229d4b9a"
-            )
-        ]
+    exe_paths = get_installation_paths()
     
     print(Fore.CYAN + f"\nClientSettings status:")
     for base_path in exe_paths:
@@ -373,10 +436,37 @@ def debug():
     else:
         print(Fore.RED + "  ✗ Not found")
 
+    # Wine check for non-Windows systems
+    if not sys_info['is_windows']:
+        print(Fore.CYAN + f"\nWine Configuration:")
+        try:
+            wine_version = subprocess.check_output(["wine64", "--version"], stderr=subprocess.DEVNULL).decode().strip()
+            print(Fore.GREEN + f"  ✓ Wine installed: {wine_version}")
+        except:
+            try:
+                wine_version = subprocess.check_output(["wine", "--version"], stderr=subprocess.DEVNULL).decode().strip()
+                print(Fore.GREEN + f"  ✓ Wine installed: {wine_version}")
+            except:
+                print(Fore.RED + "  ✗ Wine not found - required for running Windows executables") # BRO I KEEP SPENDING 5 MINUTES TRYING TO FIND THESE SYMBOLS
+
     print(Fore.CYAN + f"\nSystem Information:")
-    print(Fore.YELLOW + f"OS: {platform.system()} {platform.version()}")
+    print(Fore.YELLOW + f"OS: {platform.system()} {platform.release()}")
+    print(Fore.YELLOW + f"Architecture: {platform.machine()}")
     print(Fore.YELLOW + f"CPU: {platform.processor() or 'Unknown'}")
     print(Fore.YELLOW + f"Python: {sys.version.split()[0]}")
+    
+    if sys_info['is_linux']:
+        # distro info for the linux people
+        try:
+            with open('/etc/os-release', 'r') as f:
+                os_info = f.read()
+                for line in os_info.split('\n'):
+                    if line.startswith('PRETTY_NAME='):
+                        distro = line.split('=')[1].strip('"')
+                        print(Fore.YELLOW + f"Distribution: {distro}")
+                        break
+        except:
+            pass
 
     print(Fore.MAGENTA + "=" * 50)
     press_any_key()
@@ -384,6 +474,7 @@ def debug():
 def main_menu():
     while True:
         clear()
+        sys_info = get_system_info()
 
         gradient = [
             (7, 200, 249),
@@ -410,6 +501,13 @@ def main_menu():
             print(f"\033[38;2;{r};{g};{b}m{line}\033[0m")
 
         print(Fore.BLUE + "Made with <3 by usertest on Pekora")
+        
+        # platform info
+        platform_name = "Windows" if sys_info['is_windows'] else ("Linux" if sys_info['is_linux'] else ("macOS" if sys_info['is_macos'] else "Unknown"))
+        print(Fore.CYAN + f"Running on: {platform_name}")
+        if not sys_info['is_windows']:
+            print(Fore.YELLOW + "Note: Wine is required for Windows executables")
+        
         print()
         print(Fore.YELLOW + "Select your option:")
         print(Fore.GREEN + "1 - 2017 (WIP)")
@@ -450,23 +548,10 @@ def wip_message(version):
 
 def launch_version(folder):
     clear()
+    sys_info = get_system_info()
+    
     # check paths
-    if os.name == "nt":
-        paths = [
-            os.path.expandvars(
-                fr"%localappdata%\ProjectX\Versions\version-7e043f9d229d4b9a\{folder}\ProjectXPlayerBeta.exe"
-            ),
-            os.path.expandvars(
-                fr"%localappdata%\Pekora\Versions\version-7e043f9d229d4b9a\{folder}\ProjectXPlayerBeta.exe"
-            )
-        ]
-    else:
-        base = os.path.expanduser(
-            f"~/.wine/drive_c/users/{os.getenv('USER')}/AppData/Local/Pekora/Versions/version-7e043f9d229d4b9a"
-        )
-        paths = [
-            os.path.join(base, folder, "ProjectXPlayerBeta.exe")
-        ]
+    paths = get_executable_paths(folder)
 
     # Apply FastFlags
     fastflags = load_fastflags()
@@ -486,26 +571,38 @@ def launch_version(folder):
         if os.path.isfile(path):
             exe_path = path
             break
-
+    # idk i just copied some stuff of stack overflow
     if exe_path:
         try:
-            if os.name == "nt":
+            if sys_info['is_windows']:
                 subprocess.Popen([exe_path, "--app"])
-            else:
+            elif sys_info['is_linux']:
                 subprocess.Popen([
                     "env",
                     "__NV_PRIME_RENDER_OFFLOAD=1",
                     "__GLX_VENDOR_LIBRARY_NAME=nvidia",
                     "wine64", exe_path, "--app"
                 ])
+            elif sys_info['is_macos']:
+                # macOS with Wine
+                subprocess.Popen(["wine64", exe_path, "--app"])
+            
             print(Fore.GREEN + "[*] Launch successful!")
         except Exception as e:
             print(Fore.RED + f"Error while launching:\n{e}")
+            if not sys_info['is_windows']:
+                print(Fore.YELLOW + "Make sure Wine is installed and configured properly.")
     else:
         print(Fore.RED + "Could not find executable. Error code: EXECNFOUND")
         print(Fore.YELLOW + "Searched paths:")
         for path in paths:
             print(Fore.YELLOW + f"  - {path}")
+        
+        if not sys_info['is_windows']:
+            print(Fore.CYAN + "\nTroubleshooting tips:")
+            print(Fore.YELLOW + "- Make sure Wine is installed")
+            print(Fore.YELLOW + "- Verify your Wine prefix is configured")
+            print(Fore.YELLOW + "- Check that the game is installed in the Wine prefix")
 
     press_any_key()
 
