@@ -26,6 +26,12 @@
 
 ---
 
+## 💔 R.I.P
+- As of 31 August, 2025, Pekora has shut down. Thank you to everyone who used pekoStrap and helped build it.
+
+
+---
+
 ## 🚀 Installation
 - Go to the [Releases](https://github.com/yourname/pekoStrap/releases) tab and download **`pekoStrap.exe`**  
 - Or run **`pekoStrap.py`** directly from the repo
