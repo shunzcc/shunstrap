@@ -9,7 +9,7 @@ from colorama import Fore, Style, init
 os.system("title ShunStrap")
 
 # Init colorama
-init(autoreset=True)
+init(autoreset=False)
 
 FASTFLAGS_FILE = "fastFlags.json"  # fflags
 
@@ -198,8 +198,8 @@ def ask_fastflags():
             print(Fore.MAGENTA + "No fflags set yet")
         
         print(Fore.GREEN + "\nOptions:")
-        print("1. Add FastFlag")
-        print("2. Remove FastFlag") 
+        print("1. Add a FastFlag")
+        print("2. Remove a FastFlag") 
         print("3. Clear all FastFlags")
         print("4. Apply FastFlags")
         print("5. Import FastFlags from JSON")
@@ -491,17 +491,15 @@ def main_menu():
         ]
 
         ascii_logo = [
-            "  /$$$$$$  /$$                            /$$$$$$   /$$                                 ",
-            " /$$__  $$| $$                           /$$__  $$ | $$                                 ",
-            "| $$  \__/| $$$$$$$  /$$   /$$ /$$$$$$$ | $$  \__//$$$$$$    /$$$$$$  /$$$$$$   /$$$$$$  ",
-            "|  $$$$$$ | $$__  $$| $$  | $$| $$__  $$|  $$$$$$|_  $$_/   /$$__  $$|____  $$ /$$__  $$  ",
-            "\____  $$| $$  \ $$| $$  | $$| $$  \ $$ \____  $$ | $$    | $$  \__/ /$$$$$$$| $$  \ $$     ",
-            "/$$  \ $$| $$  | $$| $$  | $$| $$  | $$ /$$  \ $$ | $$ /$$| $$      /$$__  $$| $$  | $$                      ",
-            "|  $$$$$$/| $$  | $$|  $$$$$$/| $$  | $$|  $$$$$$/ |  $$$$/| $$     |  $$$$$$$| $$$$$$$/                       ",
-            "\______/ |__/  |__/ \______/ |__/  |__/ \______/   \___/  |__/      \_______/| $$____/ ",
-            "                                                                             | $$      ",
-            "                                                                              | $$      ",
-            "                                                                              |__/      "
+            "   _____ _                  _____ _                      ",
+            "   _____ _                  _____ _                     ",
+            "  / ____| |                / ____| |                     ",
+            "| (___ | |__  _   _ _ __ | (___ | |__   __ _ _ __ _ __  ",
+            " \___ \| '_ \| | | | '_ \ \___ \| '_ \ / _` | '__| '_ \ ",
+            "  ____) | | | | |_| | | | |____) | | | | (_| | |  | |_) |",
+            " |_____/|_| |_|\__,_|_| |_|_____/|_| |_|\__,_|_|  | .__/ ",
+            "                                                  | |    ",
+            "                                                  |_|   ",
         ]
 
         for (r, g, b), line in zip(gradient, ascii_logo):
@@ -516,9 +514,9 @@ def main_menu():
             print(Fore.YELLOW + "Note: Wine is required for Windows executables")
         
         print()
-        print(Fore.YELLOW + "Select your option:")
-        print(Fore.GREEN + "1 - 2017 (doesnt work)")
-        print(Fore.GREEN + "2 - 2018 (doesnt work)")
+        print(Fore.CYAN + "Select your option:")
+        print(Fore.RED + "1 - 2017 (doesnt work)")
+        print(Fore.RED + "2 - 2018 (doesnt work)")
         print(Fore.GREEN + "3 - Launch 2020")
         print(Fore.GREEN + "4 - Launch 2021")
         print(Fore.GREEN + "5 - Set FastFlags For Pekora")
@@ -526,7 +524,7 @@ def main_menu():
         print(Fore.GREEN + "7 - Join Discord")
         print(Fore.RED + "0 - Exit Bootstrapper")
         
-        choice = input(Fore.LIGHTMAGENTA_EX + "\nYour choice: ")
+        choice = input(Fore.LIGHTBLUE_EX + "\nYour choice: ")
         
         if choice == "1":
             wip_message("2017")
