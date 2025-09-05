@@ -40,32 +40,32 @@ def get_installation_paths():
     
     if sys_info['is_windows']:
         return [
-            os.path.expandvars(r"%localappdata%\ProjectX\Versions\version-7e043f9d229d4b9a"),
-            os.path.expandvars(r"%localappdata%\Pekora\Versions\version-7e043f9d229d4b9a")
+            os.path.expandvars(r"%localappdata%\ProjectX\Versions\version-1"),
+            os.path.expandvars(r"%localappdata%\Pekora\Versions\version-1")
         ]
     elif sys_info['is_linux']:
         # Linux with Wine
         user = os.getenv('USER', 'user')
         return [
-            os.path.expanduser(f"~/.wine/drive_c/users/{user}/AppData/Local/ProjectX/Versions/version-7e043f9d229d4b9a"),
-            os.path.expanduser(f"~/.wine/drive_c/users/{user}/AppData/Local/Pekora/Versions/version-7e043f9d229d4b9a"),
+            os.path.expanduser(f"~/.wine/drive_c/users/{user}/AppData/Local/ProjectX/Versions/version-1"),
+            os.path.expanduser(f"~/.wine/drive_c/users/{user}/AppData/Local/Pekora/Versions/version-1"),
             # Alternative Wine prefix locations
-            os.path.expanduser(f"~/.local/share/wineprefixes/pekora/drive_c/users/{user}/AppData/Local/Pekora/Versions/version-7e043f9d229d4b9a"),
-            os.path.expanduser(f"~/.local/share/wineprefixes/projectx/drive_c/users/{user}/AppData/Local/ProjectX/Versions/version-7e043f9d229d4b9a")
+            os.path.expanduser(f"~/.local/share/wineprefixes/pekora/drive_c/users/{user}/AppData/Local/Pekora/Versions/version-1"),
+            os.path.expanduser(f"~/.local/share/wineprefixes/projectx/drive_c/users/{user}/AppData/Local/ProjectX/Versions/version-1")
         ]
     elif sys_info['is_macos']:
         # macOS with Wine/CrossOver/Parallels
         user = os.getenv('USER', 'user')
         return [
             # Wine on macOS
-            os.path.expanduser(f"~/.wine/drive_c/users/{user}/AppData/Local/ProjectX/Versions/version-7e043f9d229d4b9a"),
-            os.path.expanduser(f"~/.wine/drive_c/users/{user}/AppData/Local/Pekora/Versions/version-7e043f9d229d4b9a"),
+            os.path.expanduser(f"~/.wine/drive_c/users/{user}/AppData/Local/ProjectX/Versions/version-1"),
+            os.path.expanduser(f"~/.wine/drive_c/users/{user}/AppData/Local/Pekora/Versions/version-1"),
             # CrossOver
-            os.path.expanduser(f"~/Library/Application Support/CrossOver/Bottles/*/drive_c/users/{user}/AppData/Local/ProjectX/Versions/version-7e043f9d229d4b9a"),
-            os.path.expanduser(f"~/Library/Application Support/CrossOver/Bottles/*/drive_c/users/{user}/AppData/Local/Pekora/Versions/version-7e043f9d229d4b9a"),
+            os.path.expanduser(f"~/Library/Application Support/CrossOver/Bottles/*/drive_c/users/{user}/AppData/Local/ProjectX/Versions/version-1"),
+            os.path.expanduser(f"~/Library/Application Support/CrossOver/Bottles/*/drive_c/users/{user}/AppData/Local/Pekora/Versions/version-1"),
             # Parallels (if running Windows VM)
-            os.path.expanduser(f"~/Parallels/*.pvm/Windows*/Users/{user}/AppData/Local/ProjectX/Versions/version-7e043f9d229d4b9a"),
-            os.path.expanduser(f"~/Parallels/*.pvm/Windows*/Users/{user}/AppData/Local/Pekora/Versions/version-7e043f9d229d4b9a")
+            os.path.expanduser(f"~/Parallels/*.pvm/Windows*/Users/{user}/AppData/Local/ProjectX/Versions/version-1"),
+            os.path.expanduser(f"~/Parallels/*.pvm/Windows*/Users/{user}/AppData/Local/Pekora/Versions/version-1")
         ]
     else:
         print(Fore.YELLOW + f"[!] Unsupported system: {sys_info['system_name']}")
@@ -500,7 +500,7 @@ def main_menu():
         for (r, g, b), line in zip(gradient, ascii_logo):
             print(f"\033[38;2;{r};{g};{b}m{line}\033[0m")
 
-        print(Fore.BLUE + "Made with <3 by usertest on Pekora")
+        print(Fore.BLUE + "Made with <3 by shun on pekora.org")
         
         # platform info
         platform_name = "Windows" if sys_info['is_windows'] else ("Linux" if sys_info['is_linux'] else ("macOS" if sys_info['is_macos'] else "Unknown"))
