@@ -32,8 +32,8 @@
 ---
 
 ## 🚀 Installation
-- Go to the [Releases](https://github.com/yourname/pekoStrap/releases) tab and download **`pekoStrap.exe`**  
-- Or run **`Shunstrap.py`** directly from the repo
+- Go to the [Releases](https://github.com/shunzcc/shunstrap/blob/main/ShunStrap.py) tab and download **`ShunStrap.py`**  
+- Or run **`ShunStrap.py`** directly from the repo
 
 For Linux:  
 - Install [Pekora](https://pekora.org/auth/home) via [Wine](https://www.winehq.org).
