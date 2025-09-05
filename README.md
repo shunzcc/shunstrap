@@ -26,20 +26,17 @@
 
 ---
 
-## 💔 R.I.P
-- As of 31 August, 2025, Pekora has shut down. Thank you to everyone who used pekoStrap and helped build it.
-- pekora.org better btw
 
 
 ---
 
 ## 🚀 Installation
 - Go to the [Releases](https://github.com/yourname/pekoStrap/releases) tab and download **`pekoStrap.exe`**  
-- Or run **`pekoStrap.py`** directly from the repo
+- Or run **`Shunstrap.py`** directly from the repo
 
 For Linux:  
-- Install [Pekora](https://github.com/shikataganaii/Pekora-Bootstrapper/releases) via [Wine](https://www.winehq.org).
-- Or use [Pekora's Unofficial Linux Installer](https://github.com/johnhamilcar/PekoraBootstrapperLinux).
+- Install [Pekora](https://pekora.org/auth/home) via [Wine](https://www.winehq.org).
+- Or use [Pekora's Unofficial Linux Installer](https://nope.com/).
 
 ---
 
