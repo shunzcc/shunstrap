@@ -2,7 +2,7 @@
 <img width="96" height="96" alt="pekoStrap Updated" src="https://github.com/user-attachments/assets/d8b23f7b-80a3-4384-b4a8-7d4ffd42d855" />
 
 </p>
-<h1 align="center">pekoStrap</h1>
+<h1 align="center">ShunStrap</h1>
 
 <p align="center">
   <i>A custom bootstrapper for Pekora, with FastFlags and Linux support.</i>
