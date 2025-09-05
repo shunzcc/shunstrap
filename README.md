@@ -22,8 +22,8 @@
 
 ---
 
-<img src="<img width="1109" height="626" alt="{D805BB68-5C30-47F2-B824-6F3049F8CDC1}" src="https://github.com/user-attachments/assets/f8bdc129-1576-4729-b059-999042dc6f83" />
-" alt="pekoStrap Demo" />
+"<img width="1109" height="626" alt="{D805BB68-5C30-47F2-B824-6F3049F8CDC1}" src="https://github.com/user-attachments/assets/f8bdc129-1576-4729-b059-999042dc6f83" />
+"
 
 ---
 
