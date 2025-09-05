@@ -1,9 +1,12 @@
 import os
+import webbrowser
 import subprocess
 import sys
 import json
 import platform
 from colorama import Fore, Style, init
+
+os.system("title ShunStrap")
 
 # Init colorama
 init(autoreset=True)
@@ -488,13 +491,17 @@ def main_menu():
         ]
 
         ascii_logo = [
-            "              __          _______ __                    ",
-            " .-----.-----|  |--.-----|   _   |  |_.----.---.-.-----. ",
-            " |  _  |  -__|    <|  _  |   1___|   _|   _|  _  |  _  | ",
-            " |   __|_____|__|__|_____|____   |____|__| |___._|   __| ",
-            " |__|                    |:  1   |               |__|    ",
-            "                         |::.. . |                       ",
-            "                         `-------'                       "
+            "  /$$$$$$  /$$                            /$$$$$$   /$$                                 ",
+            " /$$__  $$| $$                           /$$__  $$ | $$                                 ",
+            "| $$  \__/| $$$$$$$  /$$   /$$ /$$$$$$$ | $$  \__//$$$$$$    /$$$$$$  /$$$$$$   /$$$$$$  ",
+            "|  $$$$$$ | $$__  $$| $$  | $$| $$__  $$|  $$$$$$|_  $$_/   /$$__  $$|____  $$ /$$__  $$  ",
+            "\____  $$| $$  \ $$| $$  | $$| $$  \ $$ \____  $$ | $$    | $$  \__/ /$$$$$$$| $$  \ $$     ",
+            "/$$  \ $$| $$  | $$| $$  | $$| $$  | $$ /$$  \ $$ | $$ /$$| $$      /$$__  $$| $$  | $$                      ",
+            "|  $$$$$$/| $$  | $$|  $$$$$$/| $$  | $$|  $$$$$$/ |  $$$$/| $$     |  $$$$$$$| $$$$$$$/                       ",
+            "\______/ |__/  |__/ \______/ |__/  |__/ \______/   \___/  |__/      \_______/| $$____/ ",
+            "                                                                             | $$      ",
+            "                                                                              | $$      ",
+            "                                                                              |__/      "
         ]
 
         for (r, g, b), line in zip(gradient, ascii_logo):
@@ -510,15 +517,16 @@ def main_menu():
         
         print()
         print(Fore.YELLOW + "Select your option:")
-        print(Fore.GREEN + "1 - 2017 (WIP)")
-        print(Fore.GREEN + "2 - 2018 (WIP)")
-        print(Fore.GREEN + "3 - 2020")
-        print(Fore.GREEN + "4 - 2021")
-        print(Fore.GREEN + "5 - Set FastFlags")
+        print(Fore.GREEN + "1 - 2017 (doesnt work)")
+        print(Fore.GREEN + "2 - 2018 (doesnt work)")
+        print(Fore.GREEN + "3 - Launch 2020")
+        print(Fore.GREEN + "4 - Launch 2021")
+        print(Fore.GREEN + "5 - Set FastFlags For Pekora")
         print(Fore.GREEN + "6 - Enable FPS Unlock")
-        print(Fore.RED + "0 - Exit")
+        print(Fore.GREEN + "7 - Join Discord")
+        print(Fore.RED + "0 - Exit Bootstrapper")
         
-        choice = input(Fore.WHITE + "\nEnter your choice: ")
+        choice = input(Fore.LIGHTMAGENTA_EX + "\nYour choice: ")
         
         if choice == "1":
             wip_message("2017")
@@ -534,6 +542,8 @@ def main_menu():
             launch_fps_unlocker()
         elif choice == "debug":
             debug()
+        elif choice == "7":
+         webbrowser.open("https://discord.gg/pvvKxJ78yU")      
         elif choice == "0":
             print(Fore.CYAN + "Goodbye!")
             sys.exit()
