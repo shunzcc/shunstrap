@@ -55,4 +55,5 @@ For a list of FFlags, visit [Evil3D/Pekora-FFlags](https://github.com/Evil3D/Pek
 
 ## ❤️ Credits
 - Made with ❤️ by **shun.se** on Discord
+- UI Made with ❤️ by **fahej_** on Discord (cinnamon on pekora.org)
 - Linux support and more by **olegz0464** on Discord
