@@ -5,6 +5,7 @@ import sys
 import json
 import platform
 from colorama import Fore, Style, init
+from pystyle import Colorate, Colors
 
 os.system("title ShunStrap")
 
@@ -43,8 +44,8 @@ def get_installation_paths():
     
     if sys_info['is_windows']:
         return [
-            os.path.expandvars(r"%localappdata%\ProjectX\Versions\version-1"),
-            os.path.expandvars(r"%localappdata%\Pekora\Versions\version-1")
+            os.path.expandvars(r"%localappdata%\ProjectX\Versions\version-2"),
+            os.path.expandvars(r"%localappdata%\Pekora2\Versions\version-2")
         ]
     elif sys_info['is_linux']:
         # Linux with Wine
@@ -479,52 +480,42 @@ def main_menu():
         clear()
         sys_info = get_system_info()
 
-        gradient = [
-            (7, 200, 249),
-            (5, 157, 230),
-            (4, 123, 220),
-            (3, 98, 210),
-            (2, 74, 200),
-            (1, 58, 195),
-            (0, 50, 185),
-            (13, 65, 225),
-        ]
+        ascii_logo = """   
+  ______             ______               
+ / __/ /  __ _____  / __/ /________ ____  
+ _\ \/ _ \/ // / _ \_\ \/ __/ __/ _ `/ _ \ 
+/___/_//_/\_,_/_//_/___/\__/_/  \_,_/ .__/ 
+                                /_/     
+        """
 
-        ascii_logo = [
-            "   _____ _                  _____ _                      ",
-            "   _____ _                  _____ _                     ",
-            "  / ____| |                / ____| |                     ",
-            "| (___ | |__  _   _ _ __ | (___ | |__   __ _ _ __ _ __  ",
-            " \___ \| '_ \| | | | '_ \ \___ \| '_ \ / _` | '__| '_ \ ",
-            "  ____) | | | | |_| | | | |____) | | | | (_| | |  | |_) |",
-            " |_____/|_| |_|\__,_|_| |_|_____/|_| |_|\__,_|_|  | .__/ ",
-            "                                                  | |    ",
-            "                                                  |_|   ",
-        ]
 
-        for (r, g, b), line in zip(gradient, ascii_logo):
-            print(f"\033[38;2;{r};{g};{b}m{line}\033[0m")
+        print(Colorate.Horizontal(Colors.blue_to_cyan, ascii_logo))
 
         print(Fore.BLUE + "Made with <3 by shun on pekora.org")
+        print(Fore.LIGHTBLACK_EX + "UI was tweaked by @cinnamon on pekora.org and dc ;)")
         
         # platform info
         platform_name = "Windows" if sys_info['is_windows'] else ("Linux" if sys_info['is_linux'] else ("macOS" if sys_info['is_macos'] else "Unknown"))
-        print(Fore.CYAN + f"Running on: {platform_name}")
+        print(Fore.CYAN + f"OS: {platform_name}")
         if not sys_info['is_windows']:
             print(Fore.YELLOW + "Note: Wine is required for Windows executables")
         
-        print()
-        print(Fore.CYAN + "Select your option:")
-        print(Fore.RED + "1 - 2017 (doesnt work)")
-        print(Fore.RED + "2 - 2018 (doesnt work)")
-        print(Fore.GREEN + "3 - Launch 2020")
-        print(Fore.GREEN + "4 - Launch 2021")
-        print(Fore.GREEN + "5 - Set FastFlags For Pekora")
-        print(Fore.GREEN + "6 - Enable FPS Unlock")
-        print(Fore.GREEN + "7 - Join Discord")
-        print(Fore.RED + "0 - Exit Bootstrapper")
+        menu_text = """
+╔══════════════════════════════════╗
+║  1 | LAUNCH 2017 [NOT WORKING]   ║
+║  2 | LAUNCH 2018 [NOT WORKING]   ║
+║  3 | LAUNCH 2020                 ║
+║  4 | LAUNCH 2021                 ║
+║  5 | Set FastFlags For Pekora    ║
+║  6 | Enable FPS Unlock           ║
+║  7 | Join Discord                ║
+║  0 | Exit Bootstrapper           ║
+╚══════════════════════════════════╝
+
+"""
+        print(Colorate.Vertical(Colors.blue_to_cyan, menu_text))
         
-        choice = input(Fore.LIGHTBLUE_EX + "\nYour choice: ")
+        choice = input(Fore.LIGHTBLUE_EX + "\n>> ")
         
         if choice == "1":
             wip_message("2017")
