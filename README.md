@@ -31,7 +31,7 @@
 
 ---
 
-## 🚀 Installation
+## Installation
 - Go to the [Releases](https://github.com/shunzcc/shunstrap/blob/main/ShunStrap.py) tab and download **`ShunStrap.py`**  
 - Or run **`ShunStrap.py`** directly from the repo
 
@@ -41,20 +41,19 @@ For Linux:
 
 ---
 
-## ⭐ Features
+## Features
 - FastFlags support
-- macOS + Linux support
+- Linux support
 - FPS unlocker
 
 ---
 
-## ⚡ FastFlags
+## FastFlags
 For a list of FFlags, visit [Evil3D/Pekora-FFlags](https://github.com/Evil3D/Pekora-FFlags).
 
 ---
 
-## ❤️ Credits
-- All credits to 97yg on discord
+## Credits --
 - Made with ❤️ by **shun.se** on Discord
 - UI Made with ❤️ by **fahej_** on Discord (cinnamon on pekora.org)
 - Linux support and more by **olegz0464** on Discord
